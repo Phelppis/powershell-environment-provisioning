@@ -63,6 +63,24 @@ Describe 'CLI entry point defaults and safety' {
     }
 }
 
+Describe 'GUI entry point path resolution (no window)' {
+    BeforeAll {
+        $script:guiEntrypoint = Join-Path $PSScriptRoot '..\gui\Start-Gui.ps1'
+    }
+
+    It 'resolves the sample JSON by default in Windows PowerShell' {
+        $plan = @(& $script:guiEntrypoint -ValidateOnly)
+        $plan.Count | Should -BeGreaterThan 0
+        $plan.Stage | Should -Contain 'SQL Restore'
+        $plan.Stage | Should -Contain 'IIS'
+    }
+
+    It 'accepts an explicit JSON path without opening the form' {
+        $plan = @(& $script:guiEntrypoint -ConfigPath $script:samplePath -ValidateOnly)
+        $plan.Count | Should -BeGreaterThan 0
+    }
+}
+
 Describe 'SQL restore statement generation' {
     It 'generates safe file moves for multiple data files' {
         $files = @(
