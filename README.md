@@ -83,6 +83,18 @@ Invoke-Pester .\tests
 
 O workflow em `.github/workflows/powershell-ci.yml` analisa a sintaxe dos scripts e executa os testes automaticamente em Windows. Testes de SQL e IIS em servidores reais não fazem parte da CI pública.
 
+## Interface gráfica (Windows)
+
+A interface WinForms apresenta o plano de provisionamento em modo **somente leitura**, com recursos de exemplo e mensagens em português. Ela não executa restauração SQL, instalação de pacotes ou mudanças no IIS.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File ".\\gui\\Start-Gui.ps1"
+```
+
+A visualização utiliza o arquivo fictício `examples/config.sample.json`. Para validar a leitura e a geração do plano sem abrir uma janela, execute `./gui/Start-Gui.ps1 -ValidateOnly` no PowerShell.
+
+**Demonstração visual:** uma captura real da interface será adicionada em `docs/images/gui-preview.png` após a revisão final.
+
 ## Arquitetura e segurança
 
 A CLI e a GUI usam o mesmo módulo `src/ProvisioningToolkit.psm1`. A GUI é propositalmente **somente leitura**, permitindo demonstrar o plano sem tocar na máquina. Para executar operações reais, é necessário informar `-Apply -ConfirmEnvironment LAB` na CLI.
