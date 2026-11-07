@@ -93,7 +93,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File ".\\gui\\Start-Gui.
 
 A visualização utiliza o arquivo fictício `examples/config.sample.json`. Para validar a leitura e a geração do plano sem abrir uma janela, execute `./gui/Start-Gui.ps1 -ValidateOnly` no PowerShell.
 
-**Demonstração visual:** uma captura real da interface será adicionada em `docs/images/gui-preview.png` após a revisão final.
+### Demonstração da interface
+
+![Captura real da interface Windows Forms do Environment Provisioning Toolkit, mostrando o planejamento de SQL Server, instaladores e IIS](images/gui-preview.png)
+
+*Interface executada no Windows PowerShell 5.1 com seis etapas fictícias de provisionamento, em modo somente leitura.*
 
 ## Arquitetura e segurança
 
@@ -110,11 +114,11 @@ Este exemplo documenta conceitos úteis em **sustentação de aplicações, auto
 
 ## Próximos passos
 
-- [ ] Adicionar captura de tela real da GUI em `docs/` (capturada no Windows).
+- [x] Adicionar captura de tela real da GUI ao repositório (`images/gui-preview.png`).
 - [ ] Criar testes de integração em ambiente descartável.
 - [ ] Adicionar logs estruturados e métricas de duração por etapa.
 - [ ] Implementar rollback onde for aplicável.
 
 ---
 
-**Autor:** projeto para portfólio pessoal — personalize o perfil e a descrição do repositório antes de publicar.
+**Autor:** [Phelppis](https://github.com/Phelppis) — projeto demonstrativo para portfólio pessoal.
