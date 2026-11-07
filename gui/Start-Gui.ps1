@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
     Read-only WinForms demonstration of a PowerShell provisioning plan.
@@ -48,14 +48,14 @@ $title.AutoSize = $true
 $form.Controls.Add($title)
 
 $subtitle = New-Object System.Windows.Forms.Label
-$subtitle.Text = 'SQL Server  |  Windows Installers  |  IIS     •     Demonstracao segura (somente leitura)'
+$subtitle.Text = 'SQL Server  |  Instaladores Windows  |  IIS  |  Demonstração segura (somente leitura)'
 $subtitle.ForeColor = [System.Drawing.Color]::Silver
 $subtitle.Location = New-Object System.Drawing.Point(27, 61)
 $subtitle.AutoSize = $true
 $form.Controls.Add($subtitle)
 
 $configLabel = New-Object System.Windows.Forms.Label
-$configLabel.Text = 'Arquivo de configuracao (JSON)'
+$configLabel.Text = 'Arquivo de configuração (JSON)'
 $configLabel.Location = New-Object System.Drawing.Point(27, 108)
 $configLabel.AutoSize = $true
 $form.Controls.Add($configLabel)
@@ -81,7 +81,7 @@ $browse.FlatStyle = 'Flat'
 $form.Controls.Add($browse)
 
 $preview = New-Object System.Windows.Forms.Button
-$preview.Text = 'Gerar plano de execucao'
+$preview.Text = 'Gerar plano de execução'
 $preview.Location = New-Object System.Drawing.Point(27, 185)
 $preview.Size = New-Object System.Drawing.Size(250, 42)
 $preview.BackColor = [System.Drawing.Color]::FromArgb(37, 119, 95)
@@ -90,7 +90,7 @@ $preview.FlatStyle = 'Flat'
 $form.Controls.Add($preview)
 
 $status = New-Object System.Windows.Forms.Label
-$status.Text = 'Aguardando visualizacao do plano.'
+$status.Text = 'Aguardando visualização do plano.'
 $status.ForeColor = [System.Drawing.Color]::Silver
 $status.Location = New-Object System.Drawing.Point(294, 195)
 $status.Size = New-Object System.Drawing.Size(700, 28)
@@ -113,8 +113,8 @@ $table.SelectionMode = 'FullRowSelect'
 $table.ColumnCount = 4
 $table.Columns[0].Name = 'Etapa'
 $table.Columns[1].Name = 'Recurso'
-$table.Columns[2].Name = 'Operacao planejada'
-$table.Columns[3].Name = 'Protecao'
+$table.Columns[2].Name = 'Operação planejada'
+$table.Columns[3].Name = 'Proteção'
 $table.Columns[0].FillWeight = 20
 $table.Columns[1].FillWeight = 24
 $table.Columns[2].FillWeight = 43
@@ -122,7 +122,7 @@ $table.Columns[3].FillWeight = 42
 $form.Controls.Add($table)
 
 $footer = New-Object System.Windows.Forms.Label
-$footer.Text = 'Modo demonstracao: nenhuma instalacao, restauracao ou alteracao no IIS sera realizada por esta tela.'
+$footer.Text = 'Modo demonstração: nenhuma instalação, restauração ou alteração no IIS será realizada por esta tela.'
 $footer.ForeColor = [System.Drawing.Color]::DarkOrange
 $footer.Location = New-Object System.Drawing.Point(27, 588)
 $footer.Size = New-Object System.Drawing.Size(970, 28)
@@ -140,15 +140,53 @@ $preview.Add_Click({
         $config = Read-ToolkitConfiguration -Path $configBox.Text
         $plan = @(Get-ToolkitPlan -Configuration $config)
         foreach ($step in $plan) {
-            $null = $table.Rows.Add($step.Stage, $step.Resource, $step.Operation, $step.Safety)
-        }
+            # Localização apenas da apresentação; a CLI e a lógica permanecem independentes.
+            $stage = [string]$step.Stage
+            $operation = [string]$step.Operation
+            $safety = [string]$step.Safety
+            switch ($stage) {
+                'SQL Restore' {
+                    $stage = 'Restauração SQL'
+                    $operation = $operation -replace '^Restore latest matching ', 'Restaurar backup mais recente: '
+                    $safety = 'Substituição de banco exige -AllowReplace'
+                }
+                'Installer' {
+                    $stage = 'Instalação'
+                    $operation = $operation -replace '^Run configured (msi|exe) installer
         $status.ForeColor = [System.Drawing.Color]::LightGreen
-        $status.Text = "Ambiente: $($config.environment)  |  $($plan.Count) etapas  |  Nenhuma alteracao realizada"
+        $status.Text = "Ambiente: $($config.environment)  |  $($plan.Count) etapas  |  Nenhuma alteração realizada"
     }
     catch {
         $status.ForeColor = [System.Drawing.Color]::Tomato
-        $status.Text = 'Erro ao ler a configuracao.'
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, 'Falha na pre-visualizacao', 'OK', 'Error') | Out-Null
+        $status.Text = 'Erro ao ler a configuração.'
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, 'Falha na pré-visualização', 'OK', 'Error') | Out-Null
+    }
+})
+$preview.PerformClick()
+[void]$form.ShowDialog()
+$form.Dispose()
+, 'Executar instalador $1 configurado'
+                    $safety = 'Exige -Apply e pacote disponível'
+                }
+                'IIS' {
+                    $operation = "Criar site na porta $($config.iis.site.port) e pools de aplicações"
+                    $safety = 'Não substitui sites já existentes'
+                }
+                'IIS App' {
+                    $stage = 'Aplicação IIS'
+                    $operation = "Criar aplicação no site $($config.iis.site.name)"
+                    $safety = 'Somente criação; sem substituição'
+                }
+            }
+            $null = $table.Rows.Add($stage, $step.Resource, $operation, $safety)
+        }
+        $status.ForeColor = [System.Drawing.Color]::LightGreen
+        $status.Text = "Ambiente: $($config.environment)  |  $($plan.Count) etapas  |  Nenhuma alteração realizada"
+    }
+    catch {
+        $status.ForeColor = [System.Drawing.Color]::Tomato
+        $status.Text = 'Erro ao ler a configuração.'
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, 'Falha na pré-visualização', 'OK', 'Error') | Out-Null
     }
 })
 $preview.PerformClick()
