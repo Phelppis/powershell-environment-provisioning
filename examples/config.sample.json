@@ -1,0 +1,49 @@
+{
+  "environment": "LAB",
+  "sql": {
+    "instance": ".\\SQLEXPRESS",
+    "authentication": "Windows",
+    "trustServerCertificate": false,
+    "backupDirectory": "C:\\Lab\\Backups",
+    "dataDirectory": "C:\\Lab\\SqlData",
+    "databases": [
+      {
+        "name": "DemoCatalog",
+        "backupPattern": "DemoCatalog*.bak"
+      },
+      {
+        "name": "DemoAudit",
+        "backupPattern": "DemoAudit*.bak"
+      }
+    ]
+  },
+  "installers": [
+    {
+      "name": "DemoAgent",
+      "type": "msi",
+      "path": "C:\\Lab\\Packages\\DemoAgent.msi",
+      "arguments": "/qn /norestart"
+    },
+    {
+      "name": "DemoWorker",
+      "type": "exe",
+      "path": "C:\\Lab\\Packages\\DemoWorker.exe",
+      "arguments": "/quiet /norestart"
+    }
+  ],
+  "iis": {
+    "site": {
+      "name": "DemoPortal",
+      "physicalPath": "C:\\Lab\\Sites\\DemoPortal",
+      "port": 8085,
+      "applicationPool": "DemoPortalPool"
+    },
+    "applications": [
+      {
+        "name": "api",
+        "physicalPath": "C:\\Lab\\Sites\\DemoApi",
+        "applicationPool": "DemoApiPool"
+      }
+    ]
+  }
+}

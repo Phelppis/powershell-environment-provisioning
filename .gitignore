@@ -1,0 +1,31 @@
+# Local configs, credentials and environment secrets
+config.json
+config.local.json
+*.local.json
+.env
+.env.*
+*.pfx
+*.p12
+*.pem
+*.key
+*.kdbx
+*.secrets.json
+
+# Backups, database files, packages and machine-specific artifacts
+*.bak
+*.mdf
+*.ndf
+*.ldf
+*.msi
+*.exe
+*.zip
+logs/
+output/
+artifacts/
+
+# Editor / operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

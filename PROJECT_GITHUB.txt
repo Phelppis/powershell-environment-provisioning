@@ -1,0 +1,30 @@
+NOME SUGERIDO
+powershell-environment-provisioning
+
+DESCRICAO CURTA PARA GITHUB
+Automacao de ambientes Windows com PowerShell: restore SQL Server, instalacao controlada e configuracao IIS. GUI, testes Pester e CI.
+
+TOPICOS DO REPOSITORIO
+powershell, automation, sql-server, iis, windows-server, devops, infrastructure-automation, pester, github-actions, portfolio
+
+PUBLICACAO COM GITHUB DESKTOP
+1. Extraia o ZIP em uma pasta local, por exemplo: D:\Projetos\powershell-environment-provisioning.
+2. No GitHub Desktop: File > Add local repository > Choose; selecione essa pasta.
+3. Quando aparecer que nao e um repositorio Git, escolha criar um repositorio nessa pasta.
+4. Escreva um resumo para o commit inicial, por exemplo: 'Initial public portfolio sample'.
+5. Clique em Commit to main e depois Publish repository.
+6. Marque como Public somente apos revisar o codigo e confirmar que tem permissao de publicar o projeto adaptado.
+7. Use a descricao e os topicos acima no GitHub.
+
+PUBLICACAO COM GIT CLI
+cd D:\Projetos\powershell-environment-provisioning
+git init
+git branch -M main
+git add .
+git commit -m "Initial public portfolio sample"
+git remote add origin https://github.com/SEU-USUARIO/powershell-environment-provisioning.git
+git push -u origin main
+
+IMPORTANTE
+Nunca inclua a versao original do arquivo corporativo nem senhas, configuracoes de clientes ou instaladores.
+A interface de demonstracao e read-only. Para executar instalacoes ou restores de verdade, use apenas laboratorio.
