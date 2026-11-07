@@ -140,32 +140,19 @@ $preview.Add_Click({
         $config = Read-ToolkitConfiguration -Path $configBox.Text
         $plan = @(Get-ToolkitPlan -Configuration $config)
         foreach ($step in $plan) {
-            # Localização apenas da apresentação; a CLI e a lógica permanecem independentes.
+            # Tradução somente da apresentação; regras e ações permanecem no módulo.
             $stage = [string]$step.Stage
             $operation = [string]$step.Operation
             $safety = [string]$step.Safety
             switch ($stage) {
                 'SQL Restore' {
                     $stage = 'Restauração SQL'
-                    $operation = $operation -replace '^Restore latest matching ', 'Restaurar backup mais recente: '
+                    $operation = $operation.Replace('Restore latest matching ', 'Restaurar backup mais recente: ')
                     $safety = 'Substituição de banco exige -AllowReplace'
                 }
                 'Installer' {
                     $stage = 'Instalação'
-                    $operation = $operation -replace '^Run configured (msi|exe) installer
-        $status.ForeColor = [System.Drawing.Color]::LightGreen
-        $status.Text = "Ambiente: $($config.environment)  |  $($plan.Count) etapas  |  Nenhuma alteração realizada"
-    }
-    catch {
-        $status.ForeColor = [System.Drawing.Color]::Tomato
-        $status.Text = 'Erro ao ler a configuração.'
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, 'Falha na pré-visualização', 'OK', 'Error') | Out-Null
-    }
-})
-$preview.PerformClick()
-[void]$form.ShowDialog()
-$form.Dispose()
-, 'Executar instalador $1 configurado'
+                    $operation = $operation.Replace('Run configured ', 'Executar instalador ').Replace(' installer', ' configurado')
                     $safety = 'Exige -Apply e pacote disponível'
                 }
                 'IIS' {
