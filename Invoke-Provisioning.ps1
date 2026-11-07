@@ -20,7 +20,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'src\ProvisioningToolkit.psm1') -Force
-$results = Invoke-ToolkitPlan @PSBoundParameters
+# Forward resolved defaults explicitly: PSBoundParameters only contains caller-provided arguments.
+$results = Invoke-ToolkitPlan -ConfigPath $ConfigPath -Action $Action `
+    -Apply:$Apply -ConfirmEnvironment $ConfirmEnvironment `
+    -AllowReplace:$AllowReplace -SqlCredential $SqlCredential
 if (-not $Apply) {
     Write-Host 'PREVIEW ONLY — no changes made.' -ForegroundColor Yellow
     $results | Format-Table -AutoSize -Wrap
