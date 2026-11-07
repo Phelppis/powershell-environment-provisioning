@@ -40,3 +40,12 @@ jobs:
           Import-Module Pester -MinimumVersion 5.0
           $result = Invoke-Pester -Path ./tests -PassThru -Output Detailed
           if ($result.FailedCount -gt 0) { exit 1 }
+      - name: Run Pester tests (Windows PowerShell 5.1)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+          Import-Module Pester -MinimumVersion 5.0
+          $result = Invoke-Pester -Path ./tests -PassThru -Output Detailed
+          if ($result.FailedCount -gt 0) { exit 1 }
