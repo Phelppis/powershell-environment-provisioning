@@ -23,6 +23,9 @@ logs/
 output/
 artifacts/
 
+# Do not accidentally commit legacy corporate deployment scripts
+DeployTatic*.ps1
+
 # Editor / operating system
 .vscode/
 .idea/
