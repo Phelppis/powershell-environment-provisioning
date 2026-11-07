@@ -11,7 +11,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$ConfigPath = (Join-Path $PSScriptRoot 'examples\config.sample.json'),
+    [string]$ConfigPath,
     [ValidateSet('All','Restore','Install','IIS')][string]$Action = 'All',
     [switch]$Apply,
     [string]$ConfirmEnvironment,
@@ -19,6 +19,9 @@ param(
     [pscredential]$SqlCredential
 )
 $ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
+    $ConfigPath = Join-Path -Path $PSScriptRoot -ChildPath 'examples\config.sample.json'
+}
 Import-Module (Join-Path $PSScriptRoot 'src\ProvisioningToolkit.psm1') -Force
 # Forward resolved defaults explicitly: PSBoundParameters only contains caller-provided arguments.
 $results = Invoke-ToolkitPlan -ConfigPath $ConfigPath -Action $Action `
