@@ -41,6 +41,28 @@ Describe 'Configuration and read-only plans' {
     }
 }
 
+Describe 'CLI entry point defaults and safety' {
+    BeforeAll {
+        $script:entrypoint = Join-Path $PSScriptRoot '..\\Invoke-Provisioning.ps1'
+    }
+
+    It 'runs a full read-only preview without any arguments' {
+        { & $script:entrypoint | Out-Null } | Should -Not -Throw
+    }
+
+    It 'runs an IIS-only preview with the default configuration path' {
+        { & $script:entrypoint -Action IIS | Out-Null } | Should -Not -Throw
+    }
+
+    It 'accepts an explicit configuration path and action' {
+        { & $script:entrypoint -ConfigPath $script:samplePath -Action Restore | Out-Null } | Should -Not -Throw
+    }
+
+    It 'rejects Apply without explicit confirmation from the CLI' {
+        { & $script:entrypoint -Action IIS -Apply | Out-Null } | Should -Throw
+    }
+}
+
 Describe 'SQL restore statement generation' {
     It 'generates safe file moves for multiple data files' {
         $files = @(
