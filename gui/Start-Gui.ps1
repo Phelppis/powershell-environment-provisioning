@@ -6,11 +6,28 @@
     Displays the configured steps without modifying SQL Server, IIS, or Windows.
 #>
 [CmdletBinding()]
-param([string]$ConfigPath = (Join-Path $PSScriptRoot '..\examples\config.sample.json'))
+param(
+    [string]$ConfigPath,
+    [switch]$ValidateOnly
+)
+$ErrorActionPreference = 'Stop'
+# Resolve the path after parameter binding: Windows PowerShell 5.1 may leave
+# PSScriptRoot empty when evaluating param-block default expressions.
+if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
+    $ConfigPath = Join-Path -Path $PSScriptRoot -ChildPath '..\examples\config.sample.json'
+}
 if ($env:OS -ne 'Windows_NT') { throw 'This graphical interface is Windows-only.' }
+Import-Module (Join-Path $PSScriptRoot '..\src\ProvisioningToolkit.psm1') -Force
+
+# Headless smoke-test for CI. Does not create a form or change the system.
+if ($ValidateOnly) {
+    $config = Read-ToolkitConfiguration -Path $ConfigPath
+    Get-ToolkitPlan -Configuration $config
+    return
+}
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-Import-Module (Join-Path $PSScriptRoot '..\src\ProvisioningToolkit.psm1') -Force
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $form = New-Object System.Windows.Forms.Form
