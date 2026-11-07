@@ -40,3 +40,15 @@ jobs:
           Import-Module Pester -MinimumVersion 5.0
           $result = Invoke-Pester -Path ./tests -PassThru -Output Detailed
           if ($result.FailedCount -gt 0) { exit 1 }
+      - name: Smoke-test default paths (Windows PowerShell 5.1)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./Invoke-Provisioning.ps1 | Out-Null
+          & ./Invoke-Provisioning.ps1 -Action IIS | Out-Null
+          $steps = @(& ./gui/Start-Gui.ps1 -ValidateOnly)
+          if ($steps.Count -eq 0) { throw 'No GUI preview steps were produced.' }
+          if ('SQL Restore' -notin $steps.Stage -or 'IIS' -notin $steps.Stage) {
+              throw 'Expected SQL Restore and IIS stages in the headless GUI preview.'
+          }
+          Write-Host "Windows PowerShell $($PSVersionTable.PSVersion): CLI and GUI preview passed."
